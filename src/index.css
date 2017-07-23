@@ -85,17 +85,17 @@ h1.panel{
   border-top: none;
   border-right: none;
   border-left: none;
-  color: #3377DD;
+  color: #3377dd; /* Blue */
   /*font-family: 'Sarpanch', sans-serif;*/
   font-weight: bold;
   margin: 0 0rem 1rem;
   padding: 1rem 1rem 0;
 }
   h1 small.h1-small {
-    color: #3377DD;
+    color: #3377dd; /* Blue */
   }
 h2 {
-  color: #DD7733;
+  color: #DD7733; /* Orange */
   margin: 0 0 1rem;
   padding: 0;
   outline: 0px solid red;
@@ -107,13 +107,22 @@ h2 {
     margin: 0;
   }
     .panel-heading h4.panel-title {
-      color: #DD7733;
+      color: #DD7733; /* Orange */
       cursor: pointer;
       font-size: 26px;
     }
   .ul-features h2 {
     margin: 1rem 0 0 1rem;
   }
+h3 {
+  color: #3377dd; /* Blue */
+  font-size: 18px;
+}
+h4 {
+  color: #DD7733; /* Orange */
+  font-size: 16px;
+}
+
 p {
   /*border-bottom: 1px dotted blue;*/
   padding: 1rem 1.25rem 0rem;
@@ -196,7 +205,7 @@ form > div {
 button,
 button.btn {
   background-color: #ffffff;
-  border: 1px solid #3377dd;
+  border: 1px solid #3377dd; /* Blue */
   box-shadow: 3px 3px 7px;
   cursor: pointer;
 }
@@ -257,7 +266,7 @@ button.btn {
   }
     .modal-title,
     .modal-subtitle {
-      color: #3377DD;
+      color: #3377dd; /* Blue */
       font-size: 26px;
     }
       .modal-title {
