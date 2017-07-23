@@ -134,6 +134,15 @@ form > div {
     /*width: 9rem;*/
   }
 
+
+/* PROCESS FLOWCHART */
+
+.flowchart {
+  max-width: 975px;
+  width: 100%;
+}
+
+
 /* Form (left/top) | Timer Listing (right/bottom) */
 
 /* @media */

@@ -591,21 +591,6 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                 <li
                   className="btn-warning"
                 >
-                  @TODO: Convert this Pen to a local file structure
-                </li>
-                <li
-                  className="btn-warning"
-                >
-                  @TODO: Commit to GitHub
-                </li>
-                <li
-                  className="btn-warning"
-                >
-                  @TODO: Deploy to GitHub via Travis
-                </li>
-                <li
-                  className="btn-warning"
-                >
                   @TODO: Convert to React Native (
                   <b>
                     <i>
@@ -870,6 +855,50 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                 /⁄ &lt;/div&gt;
                 <br />
               </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="panel panel-info"
+        id={null}
+      >
+        <div
+          className="panel-heading"
+        >
+          <h4
+            className="panel-title"
+            role="presentation"
+          >
+            <a
+              aria-controls={undefined}
+              aria-expanded={false}
+              aria-selected={false}
+              className="collapsed"
+              href={undefined}
+              onClick={[Function]}
+              role="tab"
+            >
+              Process Flowchart
+            </a>
+          </h4>
+        </div>
+        <div
+          aria-expanded={null}
+          aria-hidden={true}
+          className="panel-collapse collapse"
+          id={undefined}
+          role="tabpanel"
+        >
+          <div
+            className="panel-body"
+          >
+            <div>
+              <img
+                alt="Process Flowchart"
+                className="flowchart"
+                src="//kdcinfo.com/app/done-for-now/flowchart/done-for-now.svg"
+              />
             </div>
           </div>
         </div>
