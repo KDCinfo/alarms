@@ -708,7 +708,7 @@ class TimerBox extends React.Component {
                 </header>
                 <main className="content">{this.props.children}
                     <PanelGroup defaultActiveKey="1" accordion>
-                        <Panel header="Create a Timer" eventKey="1" bsStyle="info">
+                        <Panel header={this.state.timerList.length > 0 ? `Add/View Timers` : `Create a Timer`} eventKey="1" bsStyle="info">
 
                             <Row className="show-grid">
                                 <Col xs={12} sm={5} md={5} className="field-col settings-form-col">
