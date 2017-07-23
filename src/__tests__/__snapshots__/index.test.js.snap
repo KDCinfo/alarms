@@ -1,0 +1,924 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TimerBox: Jest Snapshot 1`] = `
+<div>
+  <header>
+    <h1
+      className="panel panel-primary"
+    >
+      Done 
+      <small
+        className="h1-small"
+      >
+        (for now)
+      </small>
+    </h1>
+    <p>
+      "Done (for now)" is a multi-'timer' web app with custom snooze and a one-at-a-time notification queue. This is my second React web app, which I'm hoping will become my first React Native (mobile) app 
+      <small>
+        (which is why I haven't done much on this app's responsiveness)
+      </small>
+      .
+    </p>
+  </header>
+  <main
+    className="content"
+  >
+    <div
+      className="panel-group"
+      role="tablist"
+    >
+      <div
+        className="panel panel-info"
+        id={null}
+      >
+        <div
+          className="panel-heading"
+        >
+          <h4
+            className="panel-title"
+            role="presentation"
+          >
+            <a
+              aria-controls={undefined}
+              aria-expanded={true}
+              aria-selected={true}
+              className={null}
+              href={undefined}
+              onClick={[Function]}
+              role="tab"
+            >
+              Create a Timer
+            </a>
+          </h4>
+        </div>
+        <div
+          aria-expanded={null}
+          aria-hidden={false}
+          className="panel-collapse collapse in"
+          id={undefined}
+          role="tabpanel"
+        >
+          <div
+            className="panel-body"
+          >
+            <div
+              className="show-grid row"
+            >
+              <div
+                className="field-col settings-form-col col-md-5 col-sm-5 col-xs-12"
+              >
+                <form
+                  className="form-horizontal"
+                  onSubmit={[Function]}
+                >
+                  <h2
+                    className="hidden"
+                  >
+                    Create a Timer
+                  </h2>
+                  <div
+                    className="form-group"
+                  >
+                    <label
+                      className="col-md-5 col-sm-4 col-xs-5 control-label"
+                      htmlFor="formHorizontalTimerTitle"
+                    >
+                      Timer Title 
+                      <small>
+                        (
+                        20
+                         chars)
+                      </small>
+                    </label>
+                    <div
+                      className="col-md-7 col-sm-8 col-xs-7"
+                    >
+                      <input
+                        autoFocus={true}
+                        maxLength={20}
+                        name="entryTitle"
+                        onChange={[Function]}
+                        placeholder="Watch my show!"
+                        required={true}
+                        size={20}
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="formHorizontalTimerTime form-group"
+                  >
+                    <label
+                      className="col-md-5 col-sm-4 col-xs-5 control-label"
+                      htmlFor="formHorizontalTimerTime"
+                    >
+                      Time 
+                      <small>
+                        (hrs/ mins/ cycle)
+                      </small>
+                    </label>
+                    <div
+                      className="col-md-7 col-sm-8 col-xs-7"
+                    >
+                      <label
+                        style={
+                          Object {
+                            "display": "none",
+                          }
+                        }
+                      >
+                        Time 
+                        <small>
+                          (hrs/ mins/ cycle)
+                        </small>
+                      </label>
+                      <select
+                        data-type="number"
+                        id="entryTimeHr"
+                        name="entryHours"
+                        onChange={[Function]}
+                        required={true}
+                        size="1"
+                        value={0}
+                      >
+                        <option
+                          value={0}
+                        >
+                          00
+                        </option>
+                        <option
+                          value={1}
+                        >
+                          01
+                        </option>
+                        <option
+                          value={2}
+                        >
+                          02
+                        </option>
+                        <option
+                          value={3}
+                        >
+                          03
+                        </option>
+                        <option
+                          value={4}
+                        >
+                          04
+                        </option>
+                        <option
+                          value={5}
+                        >
+                          05
+                        </option>
+                        <option
+                          value={6}
+                        >
+                          06
+                        </option>
+                        <option
+                          value={7}
+                        >
+                          07
+                        </option>
+                        <option
+                          value={8}
+                        >
+                          08
+                        </option>
+                        <option
+                          value={9}
+                        >
+                          09
+                        </option>
+                        <option
+                          value={10}
+                        >
+                          10
+                        </option>
+                        <option
+                          value={11}
+                        >
+                          11
+                        </option>
+                        <option
+                          value={12}
+                        >
+                          12
+                        </option>
+                        <option
+                          value={13}
+                        >
+                          13
+                        </option>
+                        <option
+                          value={14}
+                        >
+                          14
+                        </option>
+                        <option
+                          value={15}
+                        >
+                          15
+                        </option>
+                        <option
+                          value={16}
+                        >
+                          16
+                        </option>
+                        <option
+                          value={17}
+                        >
+                          17
+                        </option>
+                        <option
+                          value={18}
+                        >
+                          18
+                        </option>
+                        <option
+                          value={19}
+                        >
+                          19
+                        </option>
+                        <option
+                          value={20}
+                        >
+                          20
+                        </option>
+                        <option
+                          value={21}
+                        >
+                          21
+                        </option>
+                        <option
+                          value={22}
+                        >
+                          22
+                        </option>
+                        <option
+                          value={23}
+                        >
+                          23
+                        </option>
+                      </select>
+                      <label
+                        style={
+                          Object {
+                            "display": "none",
+                          }
+                        }
+                      >
+                        Minutes
+                      </label>
+                      <select
+                        data-type="number"
+                        id="entryTimeMin"
+                        name="entryMinutes"
+                        onChange={[Function]}
+                        required={true}
+                        size="1"
+                        value={0}
+                      >
+                        <option
+                          value={0}
+                        >
+                          00
+                        </option>
+                        <option
+                          value={5}
+                        >
+                          05
+                        </option>
+                        <option
+                          value={10}
+                        >
+                          10
+                        </option>
+                        <option
+                          value={15}
+                        >
+                          15
+                        </option>
+                        <option
+                          value={20}
+                        >
+                          20
+                        </option>
+                        <option
+                          value={25}
+                        >
+                          25
+                        </option>
+                        <option
+                          value={30}
+                        >
+                          30
+                        </option>
+                        <option
+                          value={35}
+                        >
+                          35
+                        </option>
+                        <option
+                          value={40}
+                        >
+                          40
+                        </option>
+                        <option
+                          value={45}
+                        >
+                          45
+                        </option>
+                        <option
+                          value={50}
+                        >
+                          50
+                        </option>
+                        <option
+                          value={55}
+                        >
+                          55
+                        </option>
+                      </select>
+                      <label
+                        style={
+                          Object {
+                            "display": "none",
+                          }
+                        }
+                      >
+                        Cycle
+                      </label>
+                      <select
+                        data-type="number"
+                        id="entryTimeCycle"
+                        name="entryCycleSelect"
+                        onChange={[Function]}
+                        required={true}
+                        size="1"
+                        value={undefined}
+                      >
+                        <option
+                          value={0}
+                        >
+                          daily
+                        </option>
+                        <option
+                          value={1}
+                        >
+                          hourly
+                        </option>
+                        <option
+                          value={2}
+                        >
+                          every minute
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div
+                    className="form-group"
+                  >
+                    <div
+                      className="add-button-div col-md-7 col-md-offset-5 col-sm-8 col-sm-offset-4 col-xs-7 col-xs-offset-5"
+                    >
+                      <div
+                        className="label hidden"
+                      >
+                        Add It!!!
+                      </div>
+                      <button
+                        className="btn"
+                        id="entryButton"
+                      >
+                        Add Your Timer
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div
+                className="field-col timer-list hidden col-md-7 col-sm-7 col-sm-offset-0 col-xs-10 col-xs-offset-1"
+              >
+                <div
+                  className="timers-div"
+                >
+                  <div
+                    className="table-responsive"
+                  >
+                    <table
+                      className="table"
+                    >
+                      <thead>
+                        <tr>
+                          <th>
+                            Title
+                          </th>
+                          <th>
+                            Start
+                            <br />
+                            Time
+                          </th>
+                          <th>
+                            Cycle
+                          </th>
+                          <th>
+                            On/Off
+                          </th>
+                          <th
+                            className="text-center"
+                          >
+                            Time Until
+                          </th>
+                          <th>
+                            Del
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody />
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ul>
+              <li
+                className="padTopLi2"
+              >
+                Snooze delay time (in minutes; for future snoozes): 
+                <select
+                  onChange={[Function]}
+                  value={3}
+                >
+                  <option>
+                    1
+                  </option>
+                  <option>
+                    2
+                  </option>
+                  <option>
+                    3
+                  </option>
+                  <option>
+                    4
+                  </option>
+                  <option>
+                    5
+                  </option>
+                  <option>
+                    6
+                  </option>
+                  <option>
+                    7
+                  </option>
+                  <option>
+                    8
+                  </option>
+                  <option>
+                    9
+                  </option>
+                  <option>
+                    10
+                  </option>
+                  <option>
+                    11
+                  </option>
+                  <option>
+                    12
+                  </option>
+                  <option>
+                    13
+                  </option>
+                  <option>
+                    14
+                  </option>
+                  <option>
+                    15
+                  </option>
+                </select>
+              </li>
+              <li
+                className="padTopLi"
+              >
+                When a timer is created, the timer will be initially set to the next available time from when the time is set based on the 'cycle' selection.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div
+        className="panel panel-info"
+        id={null}
+      >
+        <div
+          className="panel-heading"
+        >
+          <h4
+            className="panel-title"
+            role="presentation"
+          >
+            <a
+              aria-controls={undefined}
+              aria-expanded={false}
+              aria-selected={false}
+              className="collapsed"
+              href={undefined}
+              onClick={[Function]}
+              role="tab"
+            >
+              App Features
+            </a>
+          </h4>
+        </div>
+        <div
+          aria-expanded={null}
+          aria-hidden={true}
+          className="panel-collapse collapse"
+          id={undefined}
+          role="tabpanel"
+        >
+          <div
+            className="panel-body"
+          >
+            <div
+              className="ul-features"
+            >
+              <h2
+                className="hidden"
+              >
+                App Features
+              </h2>
+              <ul>
+                <li
+                  className="padTopLi2"
+                >
+                  "
+                  <strong>
+                    Done (for now)
+                  </strong>
+                  " provides a list of all timers (both active and disabled).
+                </li>
+                <li>
+                  Timers provide the option to set recurring alerts (based on 'daily', 'hourly', and 'every minute' increments).
+                  <br />
+                    
+                  <u>
+                    Note:
+                  </u>
+                   Although all timers are initially set to be recurring, they can simply be 'Disabled' when the alert pops up, and can be disabled manually at any time.
+                </li>
+                <li>
+                  The snooze option is adjustable (between 1-15 minutes).
+                </li>
+                <li>
+                  "Done (for now)" also has a 'timer queue' to account for overlapping timer alerts.
+                </li>
+                <li>
+                  Both the [Timer List] and the custom 'Snooze Time' are saved to your local browser storage.
+                  <ul>
+                    <li>
+                      If the page is refreshed, all timers will be recreated from this saved storage.
+                    </li>
+                    <li>
+                      Any timers in 'snooze' state will be reset to their next default time (i.e., snoozes aren't saved).
+                    </li>
+                  </ul>
+                  <br />
+                </li>
+                <li
+                  className="btn-warning"
+                >
+                  @TODO: Convert this Pen to a local file structure
+                </li>
+                <li
+                  className="btn-warning"
+                >
+                  @TODO: Commit to GitHub
+                </li>
+                <li
+                  className="btn-warning"
+                >
+                  @TODO: Deploy to GitHub via Travis
+                </li>
+                <li
+                  className="btn-warning"
+                >
+                  @TODO: Convert to React Native (
+                  <b>
+                    <i>
+                      learn React Native
+                    </i>
+                  </b>
+                  )
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="panel panel-info"
+        id={null}
+      >
+        <div
+          className="panel-heading"
+        >
+          <h4
+            className="panel-title"
+            role="presentation"
+          >
+            <a
+              aria-controls={undefined}
+              aria-expanded={false}
+              aria-selected={false}
+              className="collapsed"
+              href={undefined}
+              onClick={[Function]}
+              role="tab"
+            >
+              App History
+            </a>
+          </h4>
+        </div>
+        <div
+          aria-expanded={null}
+          aria-hidden={true}
+          className="panel-collapse collapse"
+          id={undefined}
+          role="tabpanel"
+        >
+          <div
+            className="panel-body"
+          >
+            <div>
+              <pre>
+                /⁄ "Done (for now)"
+                <br />
+                <br />
+                /⁄ A React-based Web App Timer with custom snooze and a one-at-a-time notification queue.
+                <br />
+                <br />
+                /⁄ 'Done (for now)' provides timer alerts (via a modal) with Snooze/Done/Disable options (and an adjustable snooze delay).
+                <br />
+                /⁄ It also provides a custom notification 'queue' which accounts for overlapping/simultaneous alerts.
+                <br />
+                <br />
+                /⁄ @TODO: [done] items are at the bottom of this file
+                <br />
+                <br />
+                /⁄ @TODO: CodePen --&gt; GitHub                [In Progress: 2017-07-21 (Fri); Target: 2017-07-23 (Sun)]
+                <br />
+                /⁄ @TODO: Convert this Pen to a local file structure
+                <br />
+                /⁄ @TODO: Commit to GitHub (create full readme)
+                <br />
+                /⁄ @TODO: Deploy to GitHub Pages via Travis
+                <br />
+                <br />
+                /⁄ @TODO: Testing                           []
+                <br />
+                /⁄ Definitely need more scientific testing covering a range of scenarios.
+                <br />
+                /⁄ Need to move code to local dev environment to allow for Testing
+                <br />
+                <br />
+                /⁄ @TODO: Convert to React Native (learn React Native)
+                <br />
+                <br />
+                ⁄*
+                <br />
+                Storage (local; client-side [window])
+                <br />
+                https:/⁄developer.mozilla.org/en-US/docs/Web/API/Storage
+                <br />
+                *⁄
+                <br />
+                <br />
+                /⁄ HTML
+                <br />
+                /⁄ 
+                <h1>
+                  Done (for now) 
+                  <small>
+                    <small>
+                      (WIP)
+                    </small>
+                  </small>
+                </h1>
+                <br />
+                /⁄ 
+                <p>
+                  <br />
+                  /⁄     "Done (for now)" is a 'timer' app, providing options to snooze, reset, disable, and delete timers.
+                  <br />
+                  /⁄     This is my second React app, which I'm hoping will become my first React Native (mobile) app.
+                  <br />
+                  /⁄ 
+                </p>
+                <br />
+                /⁄ 
+                <div
+                  id="root"
+                />
+                <br />
+                <br />
+                /⁄ @TODO: Calculate countdown time          [DONE: 2017-07-12: 12:29am (~12 hrs 07-11 + ~8 hrs 07-12)]
+                <br />
+                /⁄ For both the 'initial timeout creation (createTimeout)',
+                <br />
+                /⁄ and when setTimeout is up and 'Done (for now)' button is selected (updateTimer (repeat timer)).
+                <br />
+                <br />
+                /⁄ @TODO: Alarm Pop-Over Panel:             [DONE: 2017-07-11/12 (scratched option to allow 'snooze')]
+                <br />
+                <br />
+                /⁄ ,--------------------------.
+                <br />
+                /⁄ |    | Done (for now) |    |
+                <br />
+                /⁄ |    \`----------------'    |
+                <br />
+                /⁄ |        TimerTitle        |
+                <br />
+                /⁄ |    ,----------------.    |
+                <br />
+                /⁄ |    |     Disable    |    |
+                <br />
+                /⁄ '--------------------------'
+                <br />
+                <br />
+                /⁄ @TODO: Add Repeat (after OK)             [DONE: 2017-07-12/13; @TODO: Need more testing]
+                <br />
+                <br />
+                /⁄ @TODO: Add a setTimeout completion queue [DONE: 2017-07-14/15; (@TODO added 2017-07-13)]
+                <br />
+                /⁄ (for multiple timers completing on the same minute)
+                <br />
+                /⁄ 1. Add to queue[] (array) when setTimeout time is up;
+                <br />
+                /⁄ 2. Remove from queue[] when closing modal;
+                <br />
+                /⁄ 3. Run queueCheck() to see if any others have entered since modal was up.
+                <br />
+                <br />
+                /⁄ In implementing this feature,
+                <br />
+                /⁄ Had to redo (fix) the timeout creation and update logic ('getTimeDiff' and 'getTimeDiffUpdate')
+                <br />
+                /⁄ Created a flowchart of the process flow (75% complete; but enough to show pertinent conditions)
+                <br />
+                /⁄ Made the form's Title input entry 'character count' (in the label) dynamic:
+                <br />
+                /⁄ It will yield the difference between the 'config setting' (passed down as a prop) and the field's current length.
+                <br />
+                /⁄ Reset DOM element focus after timer is added, so 'Add Your Timer' button doesn't stay selected (sets focus to Title).
+                <br />
+                <br />
+                /⁄ @TODO: Add Snooze option:                [DONE: 2017-07-17]
+                <br />
+                /⁄ Added snooze 'config' setting: Minutes to snooze [1-10]
+                <br />
+                <br />
+                /⁄ ,------------------------.
+                <br />
+                /⁄ |   | Snooze (3 min) |   |
+                <br />
+                /⁄ |   \`----------------'   |
+                <br />
+                /⁄ |       TimerTitle       |
+                <br />
+                /⁄ |   ,----------------.   |
+                <br />
+                /⁄ |   | Done (for now) |   |
+                <br />
+                /⁄ |   \`----------------'   |
+                <br />
+                /⁄ | [00:00] [every minute] |
+                <br />
+                /⁄ |   ,----------------.   |
+                <br />
+                /⁄ |   |     Disable    |   |
+                <br />
+                /⁄ '------------------------'
+                <br />
+                <br />
+                /⁄ @TODO:                                   [DONE: 2017-07-16]
+                <br />
+                /⁄ Set stepCountMinutes back to : 5
+                <br />
+                /⁄ Change modal verbiage: Modal Title [00:00]
+                <br />
+                /⁄ Clean up code
+                <br />
+                /⁄ (especially the redundant if/then/else with the same values in the 'update' method)
+                <br />
+                <br />
+                /⁄ @TODO: Save to localStorage              [DONE: 2017-07-18]
+                <br />
+                /⁄ 
+                <br />
+                <br />
+                /⁄ Load on page load (root component 'componentWillMount()')
+                <br />
+                /⁄ Will send all 'active' timers through 'addRemoveTimeout()' to create new setTimeouts
+                <br />
+                /⁄ Any timer in 'snooze' state will be reset to its next default time
+                <br />
+                <br />
+                /⁄ Update storage when:
+                <br />
+                /⁄ Figured out pretty quick I only needed to 'setStorageItem' after all relevant 'setState's
+                <br />
+                /⁄ setTimer, updateTimer, and removeTimer
+                <br />
+                /⁄ addRemoveTimeout, and updateTimeout
+                <br />
+                /⁄ Provide option to remove local storage for provided username
+                <br />
+                /⁄ Why? Just delete your timers; the timerList array (the only stored list) will be empty.
+                <br />
+                <br />
+                /⁄ @TODO: Visual Timeout Countdowns         [DONE: 2017-07-19]
+                <br />
+                /⁄ To show a countdown of active counters: Will need to set up something generic.
+                <br />
+                /⁄ This is primarily done. Just need to fix the 'timerDisplayList' for 'snooze' and 'done' action buttons when alerts are up.
+                <br />
+                /⁄ Fixed. Just missed initializing a variable (forgot to \`let\` it be)
+                <br />
+                <br />
+                /⁄ @TODO: Functional Flowchart              [DONE: 2017-07-20]
+                <br />
+                /⁄ Finish flowchart (https:/⁄www.draw.io/)
+                <br />
+                /⁄ Ensure all paths are being covered | cross-check with 'streamlined' file
+                <br />
+                /⁄ Done: I also cross-checked with a super-streamlined file (which isolated a function being declared twice in the same component - whoops.)
+                <br />
+                /⁄ Exported in a variety of formats, but delivery will be the same as Guess Right - on the README.md on the open-sourced GitHub page.
+                <br />
+                <br />
+                /⁄ &lt;div&gt;
+                <br />
+                /⁄   &lt;h3 style="padding-left: 1rem; color: #dd0000;"&gt;Temporarily Under Construction &lt;b&gt;until: 2017-07-20 (Thursday)&lt;/b&gt;&lt;/h3&gt;
+                <br />
+                /⁄   &lt;h5 style="padding-left: 1.25rem; color: #dd0000;"&gt;Visual countdowns are near complete. Will fix the 'snooze'/'done' button actions later tonight (Wed)&lt;/h5&gt;
+                <br />
+                /⁄ &lt;/div&gt;
+                <br />
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div
+      className="github"
+    >
+      Done (for now) is
+      <br />
+      <a
+        href="https://github.com/KDCinfo/done-for-now"
+        target="kdcNewWin"
+      >
+        Open Source on GitHub
+      </a>
+    </div>
+    <div
+      className="footer-right"
+    >
+      <span
+        className="mobile-only"
+      >
+        <span
+          className="hide-created-575"
+        >
+          Created by: 
+        </span>
+        <a
+          href="https://kdcinfo.com"
+          target="kdcinfo"
+        >
+          KDC-Info
+        </a>
+      </span>
+      <span
+        className="non-mobile-i"
+      >
+        Created by: 
+        <a
+          href="https://kdcinfo.com"
+          target="kdcinfo"
+        >
+          KDC-Info
+        </a>
+      </span>
+    </div>
+  </footer>
+</div>
+`;
