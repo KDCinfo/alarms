@@ -1,4 +1,6 @@
-# React > Web App: Done (for now)
+# Done (for now)
+
+## A React Web App
 
 > A React-based multi-'timer' web app with custom snooze and a one-at-a-time notification queue.
 
