@@ -122,7 +122,7 @@ class SettingsForm extends React.Component {
                                 {setSelectOptionsMinutes}
                             </select>
                             <label style={{display: 'none'}}>Cycle</label>
-                            <select id="entryTimeCycle" name="entryCycleSelect" data-type="number" {...timeProps} value={this.state.entryCycle} size="1">
+                            <select id="entryTimeCycle" name="entryCycleSelect" data-type="number" {...timeProps} value={this.state.entryCycleSelect} size="1">
                                 { this.props.entryCycleList.map( (cycle, idx) => <option key={idx} value={idx}>{cycle}</option> ) }
                             </select>
                     </Col>

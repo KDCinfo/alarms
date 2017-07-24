@@ -714,6 +714,7 @@ class TimerBox extends React.Component {
                                         <br/>
                                     </li>
                                     <li className="btn-warning">@TODO: Convert to React Native (<b><i>learn React Native</i></b>)</li>
+                                    <li>@TODO: Provide an option to not show minutes when timers are set to hourly or daily.</li>
                                 </ul>
                             </div>
                         </Panel>

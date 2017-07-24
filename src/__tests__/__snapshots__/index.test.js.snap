@@ -359,7 +359,7 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                         onChange={[Function]}
                         required={true}
                         size="1"
-                        value={undefined}
+                        value={0}
                       >
                         <option
                           value={0}
@@ -598,6 +598,9 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                     </i>
                   </b>
                   )
+                </li>
+                <li>
+                  @TODO: Provide an option to not show minutes when timers are set to hourly or daily.
                 </li>
               </ul>
             </div>

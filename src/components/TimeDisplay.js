@@ -28,6 +28,10 @@ class TimeDisplay extends React.Component {
             tDateMin = parseInt((tDateDiff / (1000 * 60)) % 60, 10)
             tDateHr = parseInt((tDateDiff / (1000 * 60 * 60)) % 24, 10)
 
+            tDateHr = (tDateHr <= 0) ? 0 : tDateHr
+            tDateMin = (tDateMin <= 0) ? 0 : tDateMin
+            tDateSec = (tDateSec <= 0) ? 0 : tDateSec
+
             tDateHr = (tDateHr < 10) ? "0" + tDateHr : tDateHr
             tDateMin = (tDateMin < 10) ? "0" + tDateMin : tDateMin
             tDateSec = (tDateSec < 10) ? "0" + tDateSec : tDateSec
