@@ -37,7 +37,7 @@ class Timer extends React.Component {
                     />
                 </td>
                 <td className="text-center">
-                    <TimeDisplay targetTime={timeDisplay} />
+                    <TimeDisplay targetTime={timeDisplay} showSeconds={this.props.showSeconds} />
                 </td>
                 <td>
                     <button

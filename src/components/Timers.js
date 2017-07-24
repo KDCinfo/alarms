@@ -31,6 +31,7 @@ class Timers extends React.Component {
                                 entryCycleList={this.props.entryCycleList}
                                 toggleTimeout={this.props.toggleTimeout}
                                 removeTimer={this.props.removeTimer}
+                                showSeconds={this.props.showSeconds}
                             />
                         )}
                     </tbody>

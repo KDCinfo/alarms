@@ -4,14 +4,11 @@ import { PanelGroup, Panel, Row, Col } from 'react-bootstrap'
 
 import { getStorageItem, setStorageItem } from '../utilities/functions'
 
-import SnoozeForm from './SnoozeForm'
-
 import SettingsForm from './SettingsForm'
-
+import SnoozeForm from './SnoozeForm'
+import ShowSecondsForm from './ShowSecondsForm'
 import Timers from './Timers'
-
 import TimerAlertPrompt from './TimerAlertPrompt'
-
 import History from './History'
 
 class TimerBox extends React.Component {
@@ -20,6 +17,8 @@ class TimerBox extends React.Component {
 
         const storedSnoozeTime = getStorageItem(localStorage, 'snoozeTime'),
               stateSnoozeTime = storedSnoozeTime ? storedSnoozeTime : 3,
+              storedShowSeconds = getStorageItem(localStorage, 'showSeconds'),
+              stateShowSeconds = storedShowSeconds ? storedShowSeconds : false,
               storedTimerList = getStorageItem(localStorage, 'timerList'),
               stateTimerList = (storedTimerList) ? JSON.parse(storedTimerList) : []
 
@@ -39,8 +38,10 @@ class TimerBox extends React.Component {
             showModal: false,
             modalTitle: '',
             modalTimerId: '',
+            showSeconds: stateShowSeconds,
         }
         this.setSnooze = this.setSnooze.bind(this)
+        this.setShowSeconds = this.setShowSeconds.bind(this)
         this.setTimer = this.setTimer.bind(this)
         this.setTimerCallback = this.setTimerCallback.bind(this)
         this.addRemoveTimeout = this.addRemoveTimeout.bind(this)
@@ -650,6 +651,16 @@ class TimerBox extends React.Component {
             }
         )
     }
+    setShowSeconds(showSeconds) {
+        //
+        this.setState(
+            { showSeconds: showSeconds },
+            () => {
+                setStorageItem(localStorage, 'showSeconds', showSeconds)
+                console.log('[setShowSeconds] Show Seconds set to:', this.state.showSeconds)
+            }
+        )
+    }
     showModal() {
         this.setState({ showModal: true })
     }
@@ -687,12 +698,16 @@ class TimerBox extends React.Component {
                                         timeoutList={this.state.timeoutList}
                                         timerDisplayList={this.state.timerDisplayList}
                                         entryCycleList={this.state.entryCycleList}
+                                        showSeconds={this.state.showSeconds}
                                     />
                                 </Col>
                             </Row>
                             <ul>
-                                <li className="padTopLi2">Snooze delay time (in minutes; for future snoozes):&nbsp;
+                                <li className="padTopLi2"><span className="timer-options">[Setting]</span> Snooze delay time (in minutes; for future snoozes):&nbsp;
                                     <SnoozeForm snoozeTime={this.state.snoozeTime} setSnooze={this.setSnooze} />
+                                </li>
+                                <li className="padTopLi"><span className="timer-options">[Setting]</span> Always show seconds (checked), or only during last minute (unchecked):&nbsp;
+                                    <ShowSecondsForm showSeconds={this.state.showSeconds} setShowSeconds={this.setShowSeconds} />
                                 </li>
                                 <li className="padTopLi">When a timer is created, the timer will be initially set to the next available time from when the time is set based on the 'cycle' selection.</li>
                             </ul>
@@ -714,7 +729,6 @@ class TimerBox extends React.Component {
                                         <br/>
                                     </li>
                                     <li className="btn-warning">@TODO: Convert to React Native (<b><i>learn React Native</i></b>)</li>
-                                    <li>@TODO: Provide an option to not show minutes when timers are set to hourly or daily.</li>
                                 </ul>
                             </div>
                         </Panel>

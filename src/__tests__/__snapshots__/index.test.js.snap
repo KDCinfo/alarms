@@ -448,7 +448,12 @@ exports[`TimerBox: Jest Snapshot 1`] = `
               <li
                 className="padTopLi2"
               >
-                Snooze delay time (in minutes; for future snoozes): 
+                <span
+                  className="timer-options"
+                >
+                  [Setting]
+                </span>
+                 Snooze delay time (in minutes; for future snoozes): 
                 <select
                   onChange={[Function]}
                   value={3}
@@ -499,6 +504,21 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                     15
                   </option>
                 </select>
+              </li>
+              <li
+                className="padTopLi"
+              >
+                <span
+                  className="timer-options"
+                >
+                  [Setting]
+                </span>
+                 Always show seconds (checked), or only during last minute (unchecked): 
+                <input
+                  checked={false}
+                  onChange={[Function]}
+                  type="checkbox"
+                />
               </li>
               <li
                 className="padTopLi"
@@ -598,9 +618,6 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                     </i>
                   </b>
                   )
-                </li>
-                <li>
-                  @TODO: Provide an option to not show minutes when timers are set to hourly or daily.
                 </li>
               </ul>
             </div>

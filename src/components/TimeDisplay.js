@@ -16,7 +16,8 @@ class TimeDisplay extends React.Component {
             tDateHr,
             tDateMin,
             tDateSec,
-            tmpTimeDisplay
+            tmpTimeDisplay,
+            showSeconds = false
 
         if (this.props.targetTime === 0) {
             this.setState({ tTimeDisplay: '' })
@@ -32,6 +33,8 @@ class TimeDisplay extends React.Component {
             tDateMin = (tDateMin <= 0) ? 0 : tDateMin
             tDateSec = (tDateSec <= 0) ? 0 : tDateSec
 
+            showSeconds = (tDateHr === 0 && tDateMin === 0) || this.props.showSeconds
+
             tDateHr = (tDateHr < 10) ? "0" + tDateHr : tDateHr
             tDateMin = (tDateMin < 10) ? "0" + tDateMin : tDateMin
             tDateSec = (tDateSec < 10) ? "0" + tDateSec : tDateSec
@@ -39,7 +42,11 @@ class TimeDisplay extends React.Component {
             // return minutes + ":" + (seconds < 10 ? '0' : '') + seconds
             // return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? '0' : '') + seconds)
 
-            tmpTimeDisplay = tDateHr + ':' + tDateMin + ':' + tDateSec
+            if (!showSeconds) {
+                tmpTimeDisplay = tDateHr + ':' + tDateMin
+            } else {
+                tmpTimeDisplay = tDateHr + ':' + tDateMin + ':' + tDateSec
+            }
 
             this.setState({ tTimeDisplay: tmpTimeDisplay })
             // this.setState({ tTimeDisplay: tDateHr + ':' + tDateMin + ':' + (tDateSec < 10 ? '0' : '') + tDateSec })
