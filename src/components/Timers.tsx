@@ -1,16 +1,47 @@
-import React from 'react'
+import * as React from 'react';
 
-import { Table } from 'react-bootstrap'
+import { Table } from 'react-bootstrap';
 
-import Timer from './Timer'
+import Timer from './Timer';
 
-class Timers extends React.Component {
+interface TimerListState {
+    id: number;
+    title: string;
+    time: string;
+    cycle: number;
+    active: boolean;
+}
+
+interface TimeoutListState {
+    id: number;
+    timer: number;
+}
+
+interface TimerDisplayListState {
+    id: number;
+    destination: number;
+}
+
+interface TimersProps {
+    removeTimer: (timerId: number) => void;                     // removeTimer(timerId: number) {
+    toggleTimeout: (timerId: number, onOff: string) => void;    // toggleTimeout(timerId: number, onOff: string) {
+    timerList: TimerListState[];
+    timeoutList: TimeoutListState[];
+    timerDisplayList: TimerDisplayListState[];
+    entryCycleList: string[];
+    showSeconds: boolean;
+}
+
+class Timers extends React.Component<TimersProps, {}> {
+    constructor(props: TimersProps) {
+        super(props);
+    }
     render() {
         // console.log('[Timers] 1:', this.props.timeoutList)
         // console.log('[Timers] 2:', this.props.timerDisplayList)
         return (
             <div className="timers-div">
-                <Table responsive>
+                <Table responsive={true}>
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -22,7 +53,7 @@ class Timers extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        { this.props.timerList.map( (entry, idx) =>
+                        { this.props.timerList.map( (entry, idx: number) =>
                             <Timer
                                 key={idx}
                                 entry={entry}
@@ -37,8 +68,8 @@ class Timers extends React.Component {
                     </tbody>
                 </Table>
             </div>
-        )
+        );
     }
 }
 
-export default Timers
+export default Timers;

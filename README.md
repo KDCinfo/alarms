@@ -4,10 +4,12 @@
 
 > A React-based multi-'timer' web app with custom snooze and a one-at-a-time notification queue.
 
-'Done For Now' provides timer alerts (via a modal) with Snooze/Done/Disable options (and an adjustable snooze delay).
+'Done (for now)' provides timer alerts (via a modal) with Snooze/Done/Disable options (and an adjustable snooze delay).
 It also provides a custom notification 'queue' which accounts for overlapping/simultaneous alerts.
 
 This is my second React web app, which I'm hoping will become my first React Native (mobile) app (once I learn React Native, which is next on my list of learnables).
+
+I added TypeScript in August 2017. Also got `localStorage` mock-up `typed` to accommodate testing.
 
 ## Application URLs
 
@@ -23,6 +25,10 @@ Working on this project provided me a more in-depth look into
   - React (15.5.4)
   - Local component state and props
   - Client-side localStorage
+  - Basic Testing (Jest and Enzyme)
+
+
+  - TypeScript (2.4.2)
 
 My API endpoint of personal choice is still Laravel (PHP), but I did everyting with client-side local storage on this project.
 (My professional choice is whatever the Back-End Engineers are comfortable and good with -- Front-End should have (little to) no dependence on a back-end tech stack.)
@@ -33,6 +39,7 @@ My API endpoint of personal choice is still Laravel (PHP), but I did everyting w
 
   - Just FYI the maximum size of local storage is 4.75 - 5 MB (depending on browser).
   - This should pose no storage issues.
+  - Storage functions are stored in `./utilities/functions.ts`
 
 ## KDC-info Project Sites
 
@@ -47,8 +54,26 @@ As of July 2017
 
 ## Tags
 
-`[react]` `[reactjs]` `[timer]` `[snooze]` `[modal]`
+`[react]` `[reactjs]` `[typescript]` `[timer]` `[snooze]` `[modal]` `[jest]` `[localStorage]`
 
 ## Tribute
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+This project was originally bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app) _(unejected)_
+
+TypeScript was later following:
+  [Migrating app from react-scripts to react-scripts-ts](https://www.bountysource.com/issues/47190513-migrating-app-from-react-scripts-to-react-scripts-ts)
+
+> -- <cite>Answered at the bottom (by @trichards57)</cite>
+
+  - Create a temporary project using `create-react-app my-temp-app --scripts-version=react-script-ts`
+
+
+  - In your own project, **remove react-scripts** and **install react-scripts-ts**
+
+
+  - Copy [`tsconfig.json`], [`tsconfig.test.json`], [`tslint.json`] from the temporary project src folder to your project's src folder.
+
+
+  - In `package.json`, change all the references to `react-scripts` to `react-scripts-ts` in the `scripts` section.
+
+    Reminder: `import * as React from ‘react’` (forgetting this will put you on a wild goose chase.)

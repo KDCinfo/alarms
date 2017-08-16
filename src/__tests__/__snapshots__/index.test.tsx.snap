@@ -14,9 +14,9 @@ exports[`TimerBox: Jest Snapshot 1`] = `
       </small>
     </h1>
     <p>
-      "Done (for now)" is a multi-'timer' web app with custom snooze and a one-at-a-time notification queue. This is my second React web app, which I'm hoping will become my first React Native (mobile) app 
+      "Done (for now)" is a multi-'timer' web app with custom snooze and a one-at-a-time notification queue. This is my second React web app, which I'm hoping will become my first React Native (mobile) app 
       <small>
-        (which is why I haven't done much on this app's responsiveness)
+        (which is why I didn't do too-too much on this app's responsiveness)
       </small>
       .
     </p>
@@ -96,6 +96,7 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                     >
                       <input
                         autoFocus={true}
+                        id="entryTitle"
                         maxLength={20}
                         name="entryTitle"
                         onChange={[Function]}
@@ -140,7 +141,7 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                         name="entryHours"
                         onChange={[Function]}
                         required={true}
-                        size="1"
+                        size={1}
                         value={0}
                       >
                         <option
@@ -279,7 +280,7 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                         name="entryMinutes"
                         onChange={[Function]}
                         required={true}
-                        size="1"
+                        size={1}
                         value={0}
                       >
                         <option
@@ -358,7 +359,7 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                         name="entryCycleSelect"
                         onChange={[Function]}
                         required={true}
-                        size="1"
+                        size={1}
                         value={0}
                       >
                         <option
@@ -663,6 +664,9 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                 Left; @TODO
               </h3>
               <h4>
+                Add 2-minute highlight to the "Time Until" field. (added 2017-08-14)
+              </h4>
+              <h4>
                 Convert to React Native (
                 <b>
                   learn React Native
@@ -948,6 +952,17 @@ exports[`TimerBox: Jest Snapshot 1`] = `
                 </li>
                 <li>
                   Added base test (i.e., just making sure it loads)
+                </li>
+              </ul>
+              <h4>
+                TypeScript Added [DONE: 2017-08-16 (Wed)]
+              </h4>
+              <ul>
+                <li>
+                  Added \`typing\` using TypeScript.
+                </li>
+                <li>
+                  Also got localStorage mock-up \`typed\` to accommodate testing.
                 </li>
               </ul>
             </div>

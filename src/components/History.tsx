@@ -9,13 +9,15 @@
     // 'Done (for now)' provides timer alerts (via a modal) with Snooze/Done/Disable options, and an adjustable
     // snooze delay. It also provides a custom notification 'queue' which accounts for overlapping/simultaneous alerts.
 
-import React from 'react'
+import * as React from 'react';
 
 class History extends React.Component {
     render() {
         return (
             <div>
                 <h3>Left; @TODO</h3>
+
+                <h4>Add 2-minute highlight to the "Time Until" field. (added 2017-08-14)</h4>
 
                 <h4>Convert to React Native (<b>learn React Native</b>)</h4>
                 <ul>
@@ -176,9 +178,15 @@ class History extends React.Component {
                     <li>Need to move code to local dev environment to allow for Testing</li>
                     <li>Added base test (i.e., just making sure it loads)</li>
                 </ul>
+
+                <h4>TypeScript Added [DONE: 2017-08-16 (Wed)]</h4>
+                <ul>
+                    <li>Added `typing` using TypeScript.</li>
+                    <li>Also got localStorage mock-up `typed` to accommodate testing.</li>
+                </ul>
             </div>
-        )
+        );
     }
 }
 
-export default History
+export default History;

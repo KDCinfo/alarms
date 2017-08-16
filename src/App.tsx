@@ -9,16 +9,14 @@
     // 'Done (for now)' provides timer alerts (via a modal) with Snooze/Done/Disable options, and an adjustable
     // snooze delay. It also provides a custom notification 'queue' which accounts for overlapping/simultaneous alerts.
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+// // // // // // // // // //
+// [index.css]
+//
+import './index.css';
 
-import TimerBox from './App'
+// // // // // // // // // //
+// [TimerBox.js]
+//
+import TimerBox from './components/TimerBox';
 
-if(process.env.NODE_ENV !== 'production') {
-    ;console.clear();
-}
-
-ReactDOM.render(
-    <TimerBox />,
-    root
-)
+export default TimerBox;

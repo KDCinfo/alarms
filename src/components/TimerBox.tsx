@@ -1,26 +1,88 @@
-import React from 'react'
+import * as React from 'react';
 
-import { PanelGroup, Panel, Row, Col } from 'react-bootstrap'
+import { PanelGroup, Panel, Row, Col } from 'react-bootstrap';
 
-import { getStorageItem, setStorageItem } from '../utilities/functions'
+import { getStorageItem, setStorageItem } from '../utilities/functions';
 
-import SettingsForm from './SettingsForm'
-import SnoozeForm from './SnoozeForm'
-import ShowSecondsForm from './ShowSecondsForm'
-import Timers from './Timers'
-import TimerAlertPrompt from './TimerAlertPrompt'
-import History from './History'
+import SettingsForm from './SettingsForm';
+import SnoozeForm from './SnoozeForm';
+import ShowSecondsForm from './ShowSecondsForm';
+import Timers from './Timers';
+import TimerAlertPrompt from './TimerAlertPrompt';
+import History from './History';
 
-class TimerBox extends React.Component {
-    constructor(props) {
-        super(props)
+/*
+ * INTERFACES
+ */
+interface TimerListState {
+    id: number;
+    title: string;
+    time: string;
+    cycle: number;
+    active: boolean;
+}
+
+interface TimeoutListState {
+    id: number;
+    timer: number;
+}
+
+interface TimerDisplayListState {
+    id: number;
+    destination: number;
+}
+
+interface TimerBoxState {
+    timerList: TimerListState[];            // A list of timers: { id: 0, title: '', time: '00:00', cycle: 0 }
+    timeoutList: TimeoutListState[];            // A list of active timers -- with Timeout ID: { id: 0, timer: 0 }
+                                                // timeoutList[] will have 2 entries for each timeout
+                                                    // [
+                                                    //     {id: 0, timer: 15}, <-- Modal-prompt setTimeout ('pop-up alerts')
+                                                    //     {id: 0, timer: 24}, <-- Every-second setTimeout ('visual counter')
+                                                    //     {id: 1, timer: 32}, <-- Modal-prompt setTimeout
+                                                    //     {id: 1, timer: 45}  <-- Every-second setTimeout
+                                                    // ]
+    timeoutQueue: number[];                     // A list of completed timeouts going through the 'modal' process.
+    timerDisplayList: TimerDisplayListState[];  // 1-second timeouts that update set (stateless) <TimeDisplay />s.
+                                                // timerDisplayList[]
+                                                    // --> 'id' is this sibling timeout's Timer ID; 'destination' is current date/time plus timeDiff
+                                                    // [
+                                                    //     {id: 24, destination: targetDateInMilliseconds},
+                                                    //     {id: 45, destination: targetDateInMilliseconds}
+                                                    // ]
+    titleCount: number;                         // 20,
+    titleTemp: string;                          // 'Watch my show!',
+    countHours: number;                         // 24,
+    countMinutes: number;                       // 60,
+    stepCountMinutes: number;                   // 5,
+    snoozeTime: number;                         // stateSnoozeTime,
+    entryCycleList: string[];                   // ['daily','hourly','every minute'],
+    showModal: boolean;                         // false,
+    modalTitle: string;                         // '',
+    modalTimerId: number;                       // '',
+    showSeconds: boolean;                       // stateShowSeconds,
+}
+/*
+    interface TimeoutListInterface {
+        id: number;
+        timer: NodeJS.Timer;
+    }
+    interface TimerDisplayListInterface {
+        id: number;
+        destination: number;
+    }
+ */
+
+class TimerBox extends React.Component<{}, TimerBoxState> {
+    constructor(props: {}) {
+        super(props);
 
         const storedSnoozeTime = getStorageItem(localStorage, 'snoozeTime'),
-              stateSnoozeTime = storedSnoozeTime ? storedSnoozeTime : 3,
+              stateSnoozeTime = storedSnoozeTime ? parseInt(storedSnoozeTime, 10) : 3,
               storedShowSeconds = getStorageItem(localStorage, 'showSeconds'),
-              stateShowSeconds = storedShowSeconds ? storedShowSeconds : false,
+              stateShowSeconds = storedShowSeconds ? (storedShowSeconds.toLocaleLowerCase() === 'true') : false,
               storedTimerList = getStorageItem(localStorage, 'timerList'),
-              stateTimerList = (storedTimerList) ? JSON.parse(storedTimerList) : []
+              stateTimerList = (storedTimerList) ? JSON.parse(storedTimerList) : [];
 
         this.state = {
             timerList: stateTimerList,  // A list of timers: { id: 0, title: '', time: '00:00', cycle: 0 }
@@ -34,31 +96,32 @@ class TimerBox extends React.Component {
             countMinutes: 60,
             stepCountMinutes: 5,
             snoozeTime: stateSnoozeTime,
-            entryCycleList: ['daily','hourly','every minute'],
+            entryCycleList: ['daily', 'hourly', 'every minute'],
             showModal: false,
             modalTitle: '',
-            modalTimerId: '',
+            modalTimerId: -1,
             showSeconds: stateShowSeconds,
-        }
-        this.setSnooze = this.setSnooze.bind(this)
-        this.setShowSeconds = this.setShowSeconds.bind(this)
-        this.setTimer = this.setTimer.bind(this)
-        this.setTimerCallback = this.setTimerCallback.bind(this)
-        this.addRemoveTimeout = this.addRemoveTimeout.bind(this)
-        this.toggleTimeout = this.toggleTimeout.bind(this)
-        this.removeTimer = this.removeTimer.bind(this)
-        this.getLastId = this.getLastId.bind(this)
-        this.deleteTimeout = this.deleteTimeout.bind(this)
-        this.createTimeout = this.createTimeout.bind(this)
-        this.timerSnooze = this.timerSnooze.bind(this)
-        this.timerReset = this.timerReset.bind(this)
-        this.timerDisable = this.timerDisable.bind(this)
-        this.showModal = this.showModal.bind(this)
-        this.getTimeDiff = this.getTimeDiff.bind(this)
-        this.getTimeDiffUpdate = this.getTimeDiffUpdate.bind(this)
-        this.addToTimeoutQueue = this.addToTimeoutQueue.bind(this)
-        this.removeFromTimeoutQueue = this.removeFromTimeoutQueue.bind(this)
-        this.checkTimeoutQueue = this.checkTimeoutQueue.bind(this)
+        };
+
+        this.setSnooze = this.setSnooze.bind(this);
+        this.setShowSeconds = this.setShowSeconds.bind(this);
+        this.setTimer = this.setTimer.bind(this);
+        this.setTimerCallback = this.setTimerCallback.bind(this);
+        this.addRemoveTimeout = this.addRemoveTimeout.bind(this);
+        this.toggleTimeout = this.toggleTimeout.bind(this);
+        this.removeTimer = this.removeTimer.bind(this);
+        this.getLastId = this.getLastId.bind(this);
+        this.deleteTimeout = this.deleteTimeout.bind(this);
+        this.createTimeout = this.createTimeout.bind(this);
+        this.timerSnooze = this.timerSnooze.bind(this);
+        this.timerReset = this.timerReset.bind(this);
+        this.timerDisable = this.timerDisable.bind(this);
+        this.showModal = this.showModal.bind(this);
+        this.getTimeDiff = this.getTimeDiff.bind(this);
+        this.getTimeDiffUpdate = this.getTimeDiffUpdate.bind(this);
+        this.addToTimeoutQueue = this.addToTimeoutQueue.bind(this);
+        this.removeFromTimeoutQueue = this.removeFromTimeoutQueue.bind(this);
+        this.checkTimeoutQueue = this.checkTimeoutQueue.bind(this);
     }
     initializeState() {
         // Create new 'timeoutList' from stored 'timerList'
@@ -73,23 +136,26 @@ class TimerBox extends React.Component {
                 // which will zero out [] both 'timeoutList' and 'timeoutQueue'
 
         const storedTimerList = getStorageItem(localStorage, 'timerList'),
-              stateTimerList = (storedTimerList) ? JSON.parse(storedTimerList) : []
+              stateTimerList = (storedTimerList) ? JSON.parse(storedTimerList) : [];
 
         // 'this.state.timeoutList' should already be empty [] ( per constructor's this.state = {} )
         // 'this.state.timeoutQueue' should already be empty [] ( per constructor's this.state = {} )
 
         if (stateTimerList.length > 0) {
-            stateTimerList.forEach( (elem) => {
+            stateTimerList.forEach( (elem: {id: number, active: boolean}) => {
                 if (elem.active === true) {
-                    setTimeout( () => {                         // WHen these are not staggered, only 1 shows in the 'timerDisplay' code/layout.
-                        this.addRemoveTimeout(elem.id, 'add')   // And although setTimeout({},0) fixes this, it is not the best solution.
-                    },0)                                        // I just don't know what a more proper solution/approach would be.
+                    global.setTimeout(
+                        () => {                                     // WHen these are not staggered, only 1 shows in the 'timerDisplay' code/layout.
+                            this.addRemoveTimeout(elem.id, 'add');  // And although setTimeout({},0) fixes this, it is not the best solution.
+                        },
+                        0
+                    );                                              // I just don't know what a more proper solution/approach would be.
                 }
-            })
+            });
         }
     }
     componentDidMount() {
-        this.initializeState()
+        this.initializeState();
     }
 
     // Timers   - Can be active/non-active [id, title, time, cycle, active]
@@ -124,75 +190,78 @@ class TimerBox extends React.Component {
             // entryHoursPad = entryHours.toString().padStart(2, '0'),
             // entryMinutesPad = entryMinutes.toString().padStart(2, '0'),
 
-    setTimer(entryTitle, entryHours, entryMinutes, entryCycle) {
-        const entryHoursPad = entryHours.toString().length === 1 ? '0'+entryHours : entryHours,
-              entryMinutesPad = entryMinutes.toString().length === 1 ? '0'+entryMinutes : entryMinutes,
+    setTimer( entryTitle: string, entryHours: number, entryMinutes: number, entryCycle: number ) {
+        const entryHoursPad = entryHours.toString().length === 1 ? '0' + entryHours : entryHours,
+              entryMinutesPad = entryMinutes.toString().length === 1 ? '0' + entryMinutes : entryMinutes,
               lastIdx = this.getLastId(),
-              nextId = this.state.timerList.length === 0 ? 0 : (lastIdx+1),
+              nextId = this.state.timerList.length === 0 ? 0 : (lastIdx + 1),
               timerList = this.state.timerList.concat({
                   id: nextId,
                   title: entryTitle,
                   time: entryHoursPad + ':' + entryMinutesPad,
                   cycle: entryCycle,
                   active: false
-              })
+              });
         this.setState({ timerList }, () => {
-            setStorageItem(localStorage, 'timerList', JSON.stringify(timerList))
-            this.setTimerCallback()
-        })
+            setStorageItem(localStorage, 'timerList', JSON.stringify(timerList));
+            this.setTimerCallback();
+        });
     }
     getLastId() {
-        const lastId = this.state.timerList.reduce( (agg, curObj) => (curObj.id > agg) ? curObj.id : agg, 0 )
+        const lastId = this.state.timerList.reduce(
+            (agg: number, curObj: {id: number}) => (curObj.id > agg) ? curObj.id : agg, 0 );
 
-        return lastId
+        return lastId;
     }
     setTimerCallback() {
-        const lastId = this.getLastId()
+        const lastId = this.getLastId();
 
-        this.toggleTimeout(lastId, 'on') // 'addRemoveTimeout' is called from 'toggleTimeout'
+        this.toggleTimeout(lastId, 'on'); // 'addRemoveTimeout' is called from 'toggleTimeout'
     }
-    removeTimer(timerId) {
-        const entryId = parseInt(timerId, 10),
+    removeTimer(timerId: number) {
+        const entryId = timerId,
+              // entryId = parseInt(timerId, 10),
               newTimerList = this.state.timerList,
-              timerEntry = newTimerList.find( elem => (elem.id === entryId) )
+              timerEntry = newTimerList.find(
+                (elem: {id: number}) => (elem.id === entryId) )!; // Method not called unless `timerList` is populated
 
         if (timerEntry.active === true) {
-            this.addRemoveTimeout(entryId, 'remove')
+            this.addRemoveTimeout(entryId, 'remove');
         }
 
-        newTimerList.forEach( (elem, idx) => {
+        newTimerList.forEach( (elem: {id: number}, idx: number) => {
             if (elem.id === entryId) {
-                newTimerList.splice(idx, 1)
+                newTimerList.splice(idx, 1);
             }
-        })
+        });
         this.setState({ timerList: newTimerList }, () => {
-            setStorageItem(localStorage, 'timerList', JSON.stringify(newTimerList))
-        })
+            setStorageItem(localStorage, 'timerList', JSON.stringify(newTimerList));
+        });
     }
-    addRemoveTimeout(timerId, whichTask) {
+    addRemoveTimeout(timerId: number, whichTask: string) {
         // This method has 2 entry points:
             // removeTimer(timerId) // ID is passed in (from Timer listing)
             // toggleTimeout()      // ID is passed in (has 3 entry points)
 
-        const entryId = timerId
+        const entryId = timerId;
 
         if (whichTask === 'remove') {
-            this.deleteTimeout(entryId)
+            this.deleteTimeout(entryId);        //                    setTimeout delay is...
         } else if (whichTask === 'update') {
-            this.updateTimeout(entryId)         // no 2nd param        (setTimeout delay is based on current time)
+            this.updateTimeout(entryId);        // no 2nd param       (...based on current time)
         } else if (whichTask === 'snooze') {
-            this.updateTimeout(entryId, true)   // 2nd param = snooze  (setTimeout delay is set based on state.snoozeTime)
+            this.updateTimeout(entryId, true);  // 2nd param = snooze (...set based on state.snoozeTime)
         } else {
-            this.createTimeout(entryId)         //                     (setTimeout delay is set based on <form> submit values and current time)
+            this.createTimeout(entryId);        //                    (...set based on <form> submit values & cur time)
         }
     }
-    deleteTimeout(entryId) {
+    deleteTimeout(entryId: number) {
         // This method has 1 entry point:
             // addRemoveTimeout()
 
         let newTimeoutList = this.state.timeoutList,
             newTimerDisplayList = this.state.timerDisplayList,
-            timeoutTimerId
+            timeoutTimerId: number;
 
         // timeoutList[] will have 2 entries for each timeout
             // [
@@ -202,70 +271,75 @@ class TimerBox extends React.Component {
             //     {id: 1, timer: 45}  <-- Every-second setTimeout
             // ]
 
-            newTimeoutList.forEach( (elem, idx) => {
-                if (elem.id === entryId) {
-                    timeoutTimerId = elem.timer
-                    newTimeoutList.splice(idx, 1)
-                    window.clearTimeout(elem.timer)
-                }
-            })
-            this.setState({timeoutList: newTimeoutList})
+        newTimeoutList.forEach( (elem: {id: number, timer: number}, idx: number) => {
+            if (elem.id === entryId) {
+                timeoutTimerId = elem.timer;
+                newTimeoutList.splice(idx, 1);
+                window.clearTimeout(elem.timer);
+            }
+        });
+        this.setState({timeoutList: newTimeoutList});
 
         // timerDisplayList[]
             // [
-            //     {id: 24, destination: targetDateInMilliseconds}, <-- 'id' is this sibling timeout's Timer ID; 'destination' is current date/time plus timeDiff
-            //     {id: 45, destination: targetDateInMilliseconds}  <-- 'id' is this sibling timeout's Timer ID; 'destination' is current date/time plus timeDiff
+            //     {id: 24, destination: targetDateInMilliseconds}, <--
+            //     {id: 45, destination: targetDateInMilliseconds}  <--
             // ]
+                    // 'id' is this sibling timeout's Timer ID;
+                    // 'destination' is current date/time plus timeDiff
 
-            newTimerDisplayList.forEach( (elem, idx) => {
-                if (elem.id === timeoutTimerId) {
-                    newTimerDisplayList.splice(idx, 1)
-                    window.clearTimeout(timeoutTimerId)
-                }
-            })
-            this.setState({timerDisplayList: newTimerDisplayList})
+        newTimerDisplayList.forEach( (elem: {id: number}, idx: number) => {
+            if (elem.id === timeoutTimerId) {
+                newTimerDisplayList.splice(idx, 1);
+                window.clearTimeout(timeoutTimerId);
+            }
+        });
+        this.setState({ timerDisplayList: newTimerDisplayList });
     }
-    createTimeout(entryId) {
+    createTimeout(entryId: number) {
         // This method has 1 entry point:
             // addRemoveTimeout()
 
         const newTimerList = this.state.timerList,
-              timerEntry = newTimerList.find( elem => (elem.id === entryId) ),
-              timerHour = parseInt(timerEntry.time.substr(0,2), 10),
-              timerMinute = parseInt(timerEntry.time.substr(3,2), 10),
+              timerEntry = newTimerList.find(
+                (elem: {id: number}) => (elem.id === entryId) )!, // Method not called unless `timerList` is populated
+              timerHour = parseInt(timerEntry.time.substr(0, 2), 10),
+              timerMinute = parseInt(timerEntry.time.substr(3, 2), 10),
               timerCycle = timerEntry.cycle,
-              thisTimeDiff = this.getTimeDiff(timerHour, timerMinute, timerCycle)
-
+              thisTimeDiff = this.getTimeDiff(timerHour, timerMinute, timerCycle);
 
         let newTimeoutList = this.state.timeoutList,
             newTimerDisplayList = this.state.timerDisplayList,
             newTimeout,
             newTimeoutEntry,
             newTimerDisplayEntry,
-            targetTime
+            targetTime;
 
         // setTimeout function will subtract current time from target time and use as ({setTimeout's}, wait) time
 
-        newTimeout = setTimeout( () => {
-            // Add to timeoutQueue
-                // 1. Add to queue[] (array) when setTimeout time is up;
-                // 2. Remove from queue[] when closing modal;
-                // 3. Run queueCheck() to see if any others have entered since modal was up.
-            this.addToTimeoutQueue(entryId)
-            // this.setState(...timeoutParams, this.showModal) // <-- Moving this to [addToTimeoutQueue()]
-                // this.setState({ modalTitle: timerEntry.title, modalTimerId: entryId }, this.showModal)
-                // For native apps, modal should work fine (I presume you can hook into the system's messaging system)
+        newTimeout = window.setTimeout(
+            () => {
+                // Add to timeoutQueue
+                    // 1. Add to queue[] (array) when setTimeout time is up;
+                    // 2. Remove from queue[] when closing modal;
+                    // 3. Run queueCheck() to see if any others have entered since modal was up.
+                this.addToTimeoutQueue(entryId);
+                // this.setState(...timeoutParams, this.showModal) // <-- Moving this to [addToTimeoutQueue()]
+                    // this.setState({ modalTitle: timerEntry.title, modalTimerId: entryId }, this.showModal)
+                    // For native apps, modal should work fine (I presume you can hook into the system's messaging system)
 
-            // For web-based, might consider using window.confirm() which uses browser internal message notification system
-                // (it'll alert you if you're on another tab)
-                // window.confirm(timerEntry.title)
-        }, thisTimeDiff)
-        // }, 1000)
+                // For web-based, might consider using window.confirm() which uses browser internal message notification system
+                    // (it'll alert you if you're on another tab)
+                    // window.confirm(timerEntry.title)
+            // }, 1000)
+            },
+            thisTimeDiff
+        );
 
-        targetTime = (Date.now() + thisTimeDiff)
-        newTimerDisplayEntry = { id: newTimeout, destination: targetTime }
-        newTimerDisplayList = newTimerDisplayList.concat(newTimerDisplayEntry)
-        this.setState({ timerDisplayList: newTimerDisplayList })
+        targetTime = (Date.now() + thisTimeDiff);
+        newTimerDisplayEntry = { id: newTimeout, destination: targetTime };
+        newTimerDisplayList = newTimerDisplayList.concat(newTimerDisplayEntry);
+        this.setState({ timerDisplayList: newTimerDisplayList });
 
 //                 // timeoutList[] will have 2 entries for each timeout
 //                     // [
@@ -292,95 +366,103 @@ class TimerBox extends React.Component {
 
             // this.getTimeDiff() // Returns milliseconds between [current time] and [current time + set time + cycle]
 
-        newTimeoutEntry = { id: entryId, timer: newTimeout }
-        newTimeoutList = newTimeoutList.concat(newTimeoutEntry)
-        this.setState({ timeoutList: newTimeoutList })
+        newTimeoutEntry = { id: entryId, timer: newTimeout };
+        newTimeoutList = newTimeoutList.concat(newTimeoutEntry);
+        this.setState({ timeoutList: newTimeoutList });
     }
-    addToTimeoutQueue(entryId) {
-        let tmpTimeoutQueue = this.state.timeoutQueue
+    addToTimeoutQueue(entryId: number) {
+        let tmpTimeoutQueue = this.state.timeoutQueue;
 
-        tmpTimeoutQueue.push(entryId)
-        this.setState({timeoutQueue: tmpTimeoutQueue}, this.checkTimeoutQueue)
+        tmpTimeoutQueue.push(entryId);
+        this.setState({timeoutQueue: tmpTimeoutQueue}, this.checkTimeoutQueue);
     }
-    removeFromTimeoutQueue(entryId) {
-        let tmpTimeoutQueue = this.state.timeoutQueue
+    removeFromTimeoutQueue(entryId: number) {
+        let tmpTimeoutQueue = this.state.timeoutQueue;
 
-        tmpTimeoutQueue.forEach( (elem, idx) => {
+        tmpTimeoutQueue.forEach( (elem: number, idx: number) => {
             if (elem === entryId) {
-                tmpTimeoutQueue.splice(idx, 1)
+                tmpTimeoutQueue.splice(idx, 1);
             }
-        })
-        this.setState({timeoutQueue: tmpTimeoutQueue}, this.checkTimeoutQueue)
+        });
+        this.setState({timeoutQueue: tmpTimeoutQueue}, this.checkTimeoutQueue);
     }
     checkTimeoutQueue() {
         // get queue, get first[0] id in queue
         // set [state]modal contents (which will show modal with showModal: true)
 
-        let tmpTimeoutQueue = this.state.timeoutQueue
+        let tmpTimeoutQueue = this.state.timeoutQueue;
         if (tmpTimeoutQueue.length > 0) {
-            this.setModal(tmpTimeoutQueue[0])
+            this.setModal(tmpTimeoutQueue[0]);
         }
     }
-    setModal(entryId) {
-        const timerEntry = this.state.timerList.find( entry => (entry.id === entryId) )
-        this.setState({
-            modalTitle: timerEntry.title,
-            modalTimerId: timerEntry.id
-        }, this.showModal)
+    setModal(entryId: number) {
+        const timerEntry = this.state.timerList.find(
+                  (entry: {id: number}) => (entry.id === entryId)
+              )!; // Method not called unless `timerList` is populated
+        this.setState(
+            {
+                modalTitle: timerEntry.title,
+                modalTimerId: timerEntry.id
+            },
+            this.showModal
+        );
     }
-    updateTimeout(entryId, isSnooze) {
+    updateTimeout(entryId: number, isSnooze?: boolean) {
         // This method has 2 calls from 1 entry point:
             // addRemoveTimeout()
 
         const newTimerList = this.state.timerList,
-              timerEntry = newTimerList.find( elem => (elem.id === entryId) ),
-              timerHour = parseInt(timerEntry.time.substr(0,2), 10),
-              timerMinute = parseInt(timerEntry.time.substr(3,2), 10),
+              timerEntry = newTimerList.find(
+                  (elem: {id: number}) => (elem.id === entryId)
+              )!, // Method not called unless `timerList` is populated
+              timerHour = parseInt(timerEntry.time.substr(0, 2), 10),
+              timerMinute = parseInt(timerEntry.time.substr(3, 2), 10),
               timerCycle = timerEntry.cycle,
               thisTimeDiffUpdate = this.getTimeDiffUpdate(timerHour, timerMinute, timerCycle),
-              thisTimeoutWait = (isSnooze) ? (this.state.snoozeTime * 60 * 1000) : thisTimeDiffUpdate
+              thisTimeoutWait = (isSnooze) ? (this.state.snoozeTime * 60 * 1000) : thisTimeDiffUpdate;
                                           // [this.state.snoozeTime] is set in {state} as 'minutes', so we need to convert to milliseconds
 
         let newTimeoutList = this.state.timeoutList,
             newTimerDisplayList = this.state.timerDisplayList,
-            newTimeout,
-            tmpTimerOldId,
-            targetTime
+            newTimeout: number,
+            tmpTimerOldId: number,
+            targetTime: number;
 
-        newTimeout = setTimeout( () => {
-            this.addToTimeoutQueue(entryId)
-        }, thisTimeoutWait)
+        newTimeout = window.setTimeout(
+            () => { this.addToTimeoutQueue(entryId); },
+            thisTimeoutWait
+        );
 
         // this.deleteTimeout(entryId) // No need to delete existing 'timeout': Just update with new Timeout ID (i.e., the results of [newTimeout])
 
         // UPDATE TIMEOUT LIST
 
         // Update an Object's properties from within an Array
-        newTimeoutList = newTimeoutList.map( (elem, idx) => {
+        newTimeoutList = newTimeoutList.map( (elem: {id: number, timer: number}, idx: number) => {
             if (elem.id === entryId) {
-                tmpTimerOldId = elem.timer
-                elem.timer = newTimeout
+                tmpTimerOldId = elem.timer;
+                elem.timer = newTimeout;
             }
-            return elem
-        })
-        this.setState({ timeoutList: newTimeoutList })
+            return elem;
+        });
+        this.setState({ timeoutList: newTimeoutList });
 
         // UPDATE VISUAL COUNTDOWN LIST
 
-        targetTime = (Date.now() + thisTimeoutWait)
+        targetTime = (Date.now() + thisTimeoutWait);
         // newTimerDisplayEntry = { id: newTimeout, destination: targetTime }
         // newTimerDisplayList = newTimerDisplayList.concat(newTimerDisplayEntry)
 
-        newTimerDisplayList = newTimerDisplayList.map( elem => {
+        newTimerDisplayList = newTimerDisplayList.map( (elem: {id: number, destination: number}) => {
             if (elem.id === tmpTimerOldId) {
-                elem.id = newTimeout
-                elem.destination = targetTime
+                elem.id = newTimeout;
+                elem.destination = targetTime;
             }
-            return elem
-        })
-        this.setState({ timerDisplayList: newTimerDisplayList })
+            return elem;
+        });
+        this.setState({ timerDisplayList: newTimerDisplayList });
     }
-    getTimeDiffUpdate(tHour, tMinute, timerCycle) {
+    protected getTimeDiffUpdate(tHour: number, tMinute: number, timerCycle: number): number {
 
         let tmpDate = new Date(),
             timerDate = tmpDate.getDate(),
@@ -392,12 +474,12 @@ class TimerBox extends React.Component {
             nowDate,
             nowSetTime,
             futureSetTime,
-            timeToSetAhead = 0
+            timeToSetAhead = 0;
 
-        const currentMinutes = tmpDate.getMinutes()
+        const currentMinutes = tmpDate.getMinutes();
 
-        tmpDate.setMilliseconds(0)
-        tmpDate.setSeconds(0)
+        tmpDate.setMilliseconds(0);
+        tmpDate.setSeconds(0);
 
             // 'cycle' === '0: daily'
             // 'cycle' === '1: hourly'
@@ -406,13 +488,13 @@ class TimerBox extends React.Component {
         if (timerCycle === 0) {
             // tmpDate.setDate(tmpDate.getDate() + 1)
 
-            tmpDate.setMinutes(timerMinute, 0, 0)
-            tmpDate.setHours(timerHour)
+            tmpDate.setMinutes(timerMinute, 0, 0);
+            tmpDate.setHours(timerHour);
 
             if (timerDate === tmpDate.getDate()) {              // 15 = 15
-                addDate = 1
+                addDate = 1;
             } else {                                            // If not equal, just add a day to current day
-                addDate = tmpDate.getDate() + 1
+                addDate = tmpDate.getDate() + 1;
             }
 
         } else if (timerCycle === 1) {
@@ -423,7 +505,7 @@ class TimerBox extends React.Component {
             // 18 = 01 -- addHours = 1
             // 18 > 00 -- addHours = (timerMHour - tmpDate.getMHours()) + 1
 
-            tmpDate.setMinutes(timerMinute, 0, 0)                   // I believe this just zeros it out, and doesn't increment/decrement hours.
+            tmpDate.setMinutes(timerMinute, 0, 0);                  // I believe this just zeros it out, and doesn't increment/decrement hours.
 
             if (timerMinute <= currentMinutes) {
 
@@ -432,36 +514,36 @@ class TimerBox extends React.Component {
                 // } else if (timerHour > tmpDate.getHours()) {            // 18 > 15 | 2 > 1
                 //     // addHours = (timerHour - tmpDate.getHours()) + 1
                 // }
-                addHours = 1
+                addHours = 1;
             }
 
         } else if (timerCycle === 2) {
             // tmpDate.setMinutes(tmpDate.getMinutes() + 1)
 
-            addMinutes = 1
+            addMinutes = 1;
         }
 
-        tmpDate.setMinutes(tmpDate.getMinutes() + addMinutes)
-        tmpDate.setHours(tmpDate.getHours() + addHours)
-        tmpDate.setDate(tmpDate.getDate() + addDate)
+        tmpDate.setMinutes(tmpDate.getMinutes() + addMinutes);
+        tmpDate.setHours(tmpDate.getHours() + addHours);
+        tmpDate.setDate(tmpDate.getDate() + addDate);
 
-        futureSetTime = tmpDate.getTime()                       // Future milliseconds
+        futureSetTime = tmpDate.getTime();                      // Future milliseconds
 
-        nowDate = new Date()
-        nowSetTime = nowDate.getTime()                          // Current milliseconds
+        nowDate = new Date();
+        nowSetTime = nowDate.getTime();                         // Current milliseconds
 
-        timeToSetAhead = futureSetTime - nowSetTime             // Future milliseconds - now() milliseconds +> Target Hours +> Target Minutes
+        timeToSetAhead = futureSetTime - nowSetTime;            // Future milliseconds - now() milliseconds +> Target Hours +> Target Minutes
 
-            console.log('Add [Date|Hours|Minutes]', addDate, '|', addHours, '|', addMinutes)
+            // console.log('Add [Date|Hours|Minutes]', addDate, '|', addHours, '|', addMinutes);
 
-            console.log('[Current Date]', nowDate.toString())
-            console.log('[Target Date]', tmpDate.toString())
+            // console.log('[Current Date]', nowDate.toString());
+            // console.log('[Target Date]', tmpDate.toString());
 
-            console.log('[setTimeout(,milliseconds)]', timeToSetAhead)
+            // console.log('[setTimeout(,milliseconds)]', timeToSetAhead);
 
-        return timeToSetAhead
+        return timeToSetAhead;
     }
-    getTimeDiff(tHour, tMinute, timerCycle) {
+    protected getTimeDiff(tHour: number, tMinute: number, timerCycle: number) {
 
         let timerHour = tHour,
             timerMinute = tMinute,
@@ -471,12 +553,12 @@ class TimerBox extends React.Component {
             nowDate,
             nowSetTime,
             futureSetTime,
-            timeToSetAhead = 0
+            timeToSetAhead = 0;
 
-        const currentMinutes = tmpDate.getMinutes()
+        const currentMinutes = tmpDate.getMinutes();
 
-        tmpDate.setMilliseconds(0)
-        tmpDate.setSeconds(0)
+        tmpDate.setMilliseconds(0);
+        tmpDate.setSeconds(0);
 
         // 'cycle' === '0: daily'
         // 'cycle' === '1: hourly'
@@ -484,26 +566,26 @@ class TimerBox extends React.Component {
 
         if (timerMinute < tmpDate.getMinutes()) {               // :30 < :45 | 19 < 20 | 59
 
-            addMinutes = 60 + (timerMinute - tmpDate.getMinutes())
+            addMinutes = 60 + (timerMinute - tmpDate.getMinutes());
 
         } else if (timerMinute === tmpDate.getMinutes()) {      // :30 = :30
 
             if (timerCycle === 0 || timerCycle === 1) {
-                addMinutes = 0
+                addMinutes = 0;
             } else {
-                addMinutes = 1
+                addMinutes = 1;
             }
 
         } else if (timerMinute > tmpDate.getMinutes()) {        // :30 > :15
 
-            addMinutes = (timerMinute - tmpDate.getMinutes())
+            addMinutes = (timerMinute - tmpDate.getMinutes());
         }
 
-        tmpDate.setMinutes(tmpDate.getMinutes() + addMinutes)
+        tmpDate.setMinutes(tmpDate.getMinutes() + addMinutes);
 
         if (timerHour < tmpDate.getHours()) {                   // 18 < 21
 
-            addHours = 24 + (timerHour - tmpDate.getHours())
+            addHours = 24 + (timerHour - tmpDate.getHours());
 
         } else if (timerHour === tmpDate.getHours()) {          // 18 = 18 | 3 = (2 + 1)
 
@@ -519,26 +601,26 @@ class TimerBox extends React.Component {
                     // 1 minute ahead resulted in (+1 hour +1 minute) ahead
 
                 if (timerCycle === 0) {
-                    addHours = 24
+                    addHours = 24;
                 } else if (timerCycle === 1) {
-                    addHours = 0
+                    addHours = 0;
                 } else {
-                    addHours = 0
+                    addHours = 0;
                 }
             } else {
-                addHours = 0
+                addHours = 0;
             }
 
         } else if (timerHour > tmpDate.getHours()) {            // 18 > 15
 
-            addHours = (timerHour - tmpDate.getHours())
+            addHours = (timerHour - tmpDate.getHours());
         }
 
-        tmpDate.setHours(tmpDate.getHours() + addHours)
+        tmpDate.setHours(tmpDate.getHours() + addHours);
 
-        futureSetTime = tmpDate.getTime()                       // Future milliseconds
+        futureSetTime = tmpDate.getTime();                      // Future milliseconds
 
-        nowDate = new Date()
+        nowDate = new Date();
 
             // nowDate.setMilliseconds(0)
                 // Don't need to zero this out.
@@ -550,18 +632,18 @@ class TimerBox extends React.Component {
                     // but current time is 30 seconds before the target 'timerMinute',
                     // it'll wait that first 30 seconds... not a minute and 30 seconds.
 
-            nowSetTime = nowDate.getTime()                      // Current milliseconds
+        nowSetTime = nowDate.getTime();                         // Current milliseconds
 
-        timeToSetAhead = futureSetTime - nowSetTime             // Future milliseconds - now() milliseconds +> Target Hours +> Target Minutes
+        timeToSetAhead = futureSetTime - nowSetTime;            // Future milliseconds - now() milliseconds +> Target Hours +> Target Minutes
 
-            console.log('[getTimeDiff] Add [Hours|Minutes]', addHours, '|', addMinutes)
+            // console.log('[getTimeDiff] Add [Hours|Minutes]', addHours, '|', addMinutes);
 
-            console.log('[getTimeDiff] [Current Date]', nowDate.toString())
-            console.log('[getTimeDiff] [Target Date]', tmpDate.toString())
+            // console.log('[getTimeDiff] [Current Date]', nowDate.toString());
+            // console.log('[getTimeDiff] [Target Date]', tmpDate.toString());
 
-            // console.log('[Current milliseconds]', nowSetTime)
-            // console.log('[Target milliseconds]', futureSetTime)
-            console.log('[getTimeDiff] [setTimeout(,milliseconds)]', timeToSetAhead)
+            // // console.log('[Current milliseconds]', nowSetTime)
+            // // console.log('[Target milliseconds]', futureSetTime)
+            // console.log('[getTimeDiff] [setTimeout(,milliseconds)]', timeToSetAhead);
 
             // [getTimeDiff] AAA double-check with ZZZ (below)     24 0 0 0
             // [getTimeDiff] tmpDate PRE seconds set               Wed Jul 12 2017 00:24:54 GMT-0700 (Pacific Daylight Time)
@@ -575,24 +657,24 @@ class TimerBox extends React.Component {
             // [futureSetTime]                                     1499929200000
             // [timeToSetAhead]                                    84905781
 
-        return timeToSetAhead
+        return timeToSetAhead;
     }
-    toggleTimeout(timerId, onOff) {
+    toggleTimeout(timerId: number, onOff: string) {
         // This method has 4 entry points:
             // setTimerCallback()       // ID is highest
             // <Timer /> checkbox       // ID is passed in
             // <TimerBox /> alert Modal // ID from Modal: (timerReset && timerSnooze) (callbacks)
 
-        console.log('[toggleTimeout]', timerId, onOff)
+        // console.log('[toggleTimeout]', timerId, onOff);
 
         if (onOff === 'on') {                           // <Form /> Add -> setTimer() -> setTimerCallback()
-            this.addRemoveTimeout(timerId, 'add')
+            this.addRemoveTimeout(timerId, 'add');
         } else if (onOff === 'off') {                   // timerList[] -> <Timer /> -> checkbox
-            this.addRemoveTimeout(timerId, 'remove')
+            this.addRemoveTimeout(timerId, 'remove');
         } else if (onOff === 'snooze') {                // <Modal /> -> Snooze
-            this.addRemoveTimeout(timerId, 'snooze')
+            this.addRemoveTimeout(timerId, 'snooze');
         } else {                                        // <Modal /> -> Done (for now)
-            this.addRemoveTimeout(timerId, 'update')
+            this.addRemoveTimeout(timerId, 'update');
         }
 
         // Update Global Timer List - Set timer on/off (active/non-active)
@@ -602,93 +684,120 @@ class TimerBox extends React.Component {
                                     // Added this condition because don't think we need to run this entire section of code if it's an 'update'
                                     // ('active' state should already be 'true' -- Just need to update the timer's new Timout ID)
             const entryIdx = timerId,
-                  newTimerList = this.state.timerList.map( (elem, idx) => {
+                  newTimerList = this.state.timerList.map( (elem, idx: number) => {
                     if (elem.id === entryIdx) {
-                        elem.active = (onOff === 'on') ? true : false
+                        elem.active = (onOff === 'on') ? true : false;
                         // elem.active = (onOff === 'on' || onOff === 'update') ? true : false
                     }
-                    return elem
-                  })
+                    return elem;
+                  });
+
+            // interface TimerListState1 {
+            //     id: number;
+            //     title: string;
+            //     time: string;
+            //     cycle: number;
+            //     active: boolean;
+            // };
+
             this.setState({ timerList: newTimerList }, () => {
-                setStorageItem(localStorage, 'timerList', JSON.stringify(newTimerList))
-            })
+                setStorageItem(localStorage, 'timerList', JSON.stringify(newTimerList));
+            });
         }
     }
-    timerSnooze(entryId) {
+    timerSnooze(entryId: number) {
         //
         this.setState({ showModal: false }, () => { // This will turn off the modal,
-            this.removeFromTimeoutQueue(entryId)    //  then remove the entry from the timeoutQueue.
-            this.toggleTimeout(entryId, 'snooze')   //  then this will setup a new setTimeout, which, when done, will add this entry back into the timeoutQueue
+            this.removeFromTimeoutQueue(entryId);   //  then remove the entry from the timeoutQueue.
+            this.toggleTimeout(entryId, 'snooze');  //  then this will setup a new setTimeout, which, when done, will add this entry back into the timeoutQueue
                                                         // This should be run after the removal of the entry from the timeoutQueue (else it'll remove this entry).
                                                         // This should not pose an issue unless the setTimeout execution is less than the few milliseconds
                                                         // it takes for the 'removeFromTimeoutQueue()' method above to remove it from the queue first.
-        })
+        });
     }
-    timerReset(entryId) {
+    timerReset(entryId: number) {
         //
         this.setState({ showModal: false }, () => { // This will turn off the modal,
-            this.removeFromTimeoutQueue(entryId)    //  then remove the entry from the timeoutQueue.
-            this.toggleTimeout(entryId, 'update')   //  then this will setup a new setTimeout, which, when done, will add this entry back into the timeoutQueue
+            this.removeFromTimeoutQueue(entryId);   //  then remove the entry from the timeoutQueue.
+            this.toggleTimeout(entryId, 'update');  //  then this will setup a new setTimeout, which, when done, will add this entry back into the timeoutQueue
                                                         // This should be run after the removal of the entry from the timeoutQueue (else it'll remove this entry).
                                                         // This should not pose an issue unless the setTimeout execution is less than the few milliseconds
                                                         // it takes for the 'removeFromTimeoutQueue()' method above to remove it from the queue first.
-        })
+        });
     }
-    timerDisable(entryId) {
+    timerDisable(entryId: number) {
         //
         this.setState({ showModal: false }, () => {
-            this.toggleTimeout(entryId, 'off')
-            this.removeFromTimeoutQueue(entryId)
-        })
+            this.toggleTimeout(entryId, 'off');
+            this.removeFromTimeoutQueue(entryId);
+        });
     }
-    setSnooze(snoozeTime) {
+    setSnooze(snoozeTime: number) {
         //
         this.setState(
             { snoozeTime: snoozeTime },
             () => {
-                setStorageItem(localStorage, 'snoozeTime', snoozeTime)
-                console.log('[setSnooze] Snooze time set to:', this.state.snoozeTime)
+                setStorageItem(localStorage, 'snoozeTime', snoozeTime.toString());
+                // console.log('[setSnooze] Snooze time set to:', this.state.snoozeTime);
             }
-        )
+        );
     }
-    setShowSeconds(showSeconds) {
+    setShowSeconds(showSeconds: boolean) {
         //
         this.setState(
             { showSeconds: showSeconds },
             () => {
-                setStorageItem(localStorage, 'showSeconds', showSeconds)
-                console.log('[setShowSeconds] Show Seconds set to:', this.state.showSeconds)
+                setStorageItem(localStorage, 'showSeconds', showSeconds.toString());
+                // console.log('[setShowSeconds] Show Seconds set to:', this.state.showSeconds);
             }
-        )
+        );
     }
     showModal() {
-        this.setState({ showModal: true })
+        this.setState({ showModal: true });
     }
     render() {
-        const configSettings = {
+        const SettingsFormProps = {
             titleCount: this.state.titleCount,
             titleTemp: this.state.titleTemp,
             countHours: this.state.countHours,
             countMinutes: this.state.countMinutes,
             stepCountMinutes: this.state.stepCountMinutes,
-            entryCycleList: this.state.entryCycleList
+            entryCycleList: this.state.entryCycleList,
+            setTimer: this.setTimer,
+        };
+/*
+        interface SettingsFormProps {
+            titleCount: number;
+            titleTemp: string;
+            countHours: number;
+            countMinutes: number;
+            stepCountMinutes: number;
+            entryCycleList: string[];
+            setTimer: (
+                entryTitle: string,
+                entryHours: string,
+                entryMinutes: string,
+                entryCycle: string
+            ) => void;
         }
+*/
         return (
             <div>
                 <header>
                     <h1 className="panel panel-primary">Done <small className="h1-small">(for now)</small></h1>
                     <p>
                         "Done (for now)" is a multi-'timer' web app with custom snooze and a one-at-a-time notification queue.
-                        This is my second React web app, which I'm hoping will become my first React Native (mobile) app <small>(which is why I haven't done much on this app's responsiveness)</small>.
+                        This is my second React web app, which I'm hoping will become my first React Native (mobile) app&nbsp;
+                        <small>(which is why I didn't do too-too much on this app's responsiveness)</small>.
                     </p>
                 </header>
                 <main className="content">{this.props.children}
-                    <PanelGroup defaultActiveKey="1" accordion>
+                    <PanelGroup defaultActiveKey="1" accordion={true}>
                         <Panel header={this.state.timerList.length > 0 ? `Add/View Timers` : `Create a Timer`} eventKey="1" bsStyle="info">
 
                             <Row className="show-grid">
                                 <Col xs={12} sm={5} md={5} className="field-col settings-form-col">
-                                    <SettingsForm setTimer={this.setTimer} {...configSettings} />
+                                    <SettingsForm {...SettingsFormProps} />
                                 </Col>
                                 <Col xsOffset={1} xs={10} smOffset={0} sm={7} md={7} className={`field-col timer-list ${this.state.timerList.length === 0 && 'hidden'}`}>
                                     <Timers
@@ -703,13 +812,18 @@ class TimerBox extends React.Component {
                                 </Col>
                             </Row>
                             <ul>
-                                <li className="padTopLi2"><span className="timer-options">[Setting]</span> Snooze delay time (in minutes; for future snoozes):&nbsp;
+                                <li className="padTopLi2">
+                                    <span className="timer-options">[Setting]</span> Snooze delay time (in minutes; for future snoozes):&nbsp;
                                     <SnoozeForm snoozeTime={this.state.snoozeTime} setSnooze={this.setSnooze} />
                                 </li>
-                                <li className="padTopLi"><span className="timer-options">[Setting]</span> Always show seconds (checked), or only during last minute (unchecked):&nbsp;
+                                <li className="padTopLi">
+                                    <span className="timer-options">[Setting]</span> Always show seconds (checked), or only during last minute (unchecked):&nbsp;
                                     <ShowSecondsForm showSeconds={this.state.showSeconds} setShowSeconds={this.setShowSeconds} />
                                 </li>
-                                <li className="padTopLi">When a timer is created, the timer will be initially set to the next available time from when the time is set based on the 'cycle' selection.</li>
+                                <li className="padTopLi">
+                                    When a timer is created, the timer will be initially set to
+                                    the next available time from when the time is set based on the 'cycle' selection.
+                                </li>
                             </ul>
                         </Panel>
                         <Panel header="App Features" eventKey="2" bsStyle="info">
@@ -718,7 +832,8 @@ class TimerBox extends React.Component {
                                 <ul>
                                     <li className="padTopLi2">"<strong>Done (for now)</strong>" provides a list of all timers (both active and disabled).</li>
                                     <li>Timers provide the option to set recurring alerts (based on 'daily', 'hourly', and 'every minute' increments).<br/>
-                                        &nbsp;&nbsp;<u>Note:</u> Although all timers are initially set to be recurring, they can simply be 'Disabled' when the alert pops up, and can be disabled manually at any time.</li>
+                                        &nbsp;&nbsp;<u>Note:</u> Although all timers are initially set to be recurring,
+                                        they can simply be 'Disabled' when the alert pops up, and can be disabled manually at any time.</li>
                                     <li>The snooze option is adjustable (between 1-15 minutes).</li>
                                     <li>"Done (for now)" also has a 'timer queue' to account for overlapping timer alerts.</li>
                                     <li>Both the [Timer List] and the custom 'Snooze Time' are saved to your local browser storage.
@@ -761,13 +876,17 @@ class TimerBox extends React.Component {
                         Done (for now) is<br/><a href="https://github.com/KDCinfo/done-for-now" target="kdcNewWin">Open Source on GitHub</a>
                     </div>
                     <div className="footer-right">
-                        <span className="mobile-only"><span className="hide-created-575">Created by: </span><a href="https://kdcinfo.com" target="kdcinfo">KDC-Info</a></span>
-                        <span className="non-mobile-i">Created by: <a href="https://kdcinfo.com" target="kdcinfo">KDC-Info</a></span>
+                        <span className="mobile-only">
+                            <span className="hide-created-575">Created by: </span><a href="https://kdcinfo.com" target="kdcinfo">KDC-Info</a>
+                        </span>
+                        <span className="non-mobile-i">
+                            Created by: <a href="https://kdcinfo.com" target="kdcinfo">KDC-Info</a>
+                        </span>
                     </div>
                 </footer>
              </div>
-        )
+        );
     }
 }
 
-export default TimerBox
+export default TimerBox;
