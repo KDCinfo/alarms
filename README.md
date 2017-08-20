@@ -7,8 +7,6 @@
 'Done (for now)' provides timer alerts (via a modal) with Snooze/Done/Disable options (and an adjustable snooze delay).
 It also provides a custom notification 'queue' which accounts for overlapping/simultaneous alerts.
 
-This is my second React web app, which I'm hoping will become my first React Native (mobile) app (once I learn React Native, which is next on my list of learnables).
-
 I added TypeScript in August 2017. Also got `localStorage` mock-up `typed` to accommodate testing.
 
 ## Application URLs
@@ -23,12 +21,10 @@ I added TypeScript in August 2017. Also got `localStorage` mock-up `typed` to ac
 
 Working on this project provided me a more in-depth look into
   - React (15.5.4)
+  - TypeScript (2.4.2)
   - Local component state and props
   - Client-side localStorage
   - Basic Testing (Jest and Enzyme)
-
-
-  - TypeScript (2.4.2)
 
 My API endpoint of personal choice is still Laravel (PHP), but I did everyting with client-side local storage on this project.
 (My professional choice is whatever the Back-End Engineers are comfortable and good with -- Front-End should have (little to) no dependence on a back-end tech stack.)
