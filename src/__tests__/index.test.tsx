@@ -7,9 +7,9 @@
         // Do snapshots align and measure up?
         // Plain and simple --> Does it load?
 */
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import * as renderer from 'react-test-renderer'
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as renderer from 'react-test-renderer';
 
 // The tests included below, although they do pass, are incomplete
 // and meant only to serve as a base for testing (PRs are welcome)
@@ -36,13 +36,13 @@ describe('TimerBox:', () => {
     test('Jest Snapshot', () => {
         const component = renderer.create(
             <TimerBox />
-        )
+        );
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
-    })
+    });
 
     it('renders without crashing', () => {
         const div = document.createElement('div');
         ReactDOM.render(<TimerBox />, div);
-    })
-})
+    });
+});
