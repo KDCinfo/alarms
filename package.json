@@ -1,6 +1,6 @@
 {
   "name": "done-for-now",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An Online Multi-Timer built with React",
   "private": true,
   "dependencies": {
