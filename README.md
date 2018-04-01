@@ -4,9 +4,9 @@
 JavaScript | React | TypeScript
 ```
 
-> Temporarily Shelved
+> Shelved Indeterminately
 
-  - A custom implementation went into my [Expired To Be](https://github.com/KDCinfo/expired-to-be) app on 03/31/18.
+A custom implementation went into my [Expired To Be](https://github.com/KDCinfo/expired-to-be) app on 03/31/18. It'd likely be better to extract an Alarms API from the [`TimerBox`](expired-to-be/src/components/TimerBox.tsx) component in that project instead.
 
 ---
 
