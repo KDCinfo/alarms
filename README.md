@@ -1,6 +1,18 @@
-# Done (for now)
+# An Alarms API
 
-## A React Web App
+```
+JavaScript | React | TypeScript
+```
+
+> Temporarily Shelved
+
+  - A custom implementation went into my [Expired To Be](https://github.com/KDCinfo/expired-to-be) app on 03/31/18.
+
+---
+
+Brached from: [Done (for now)](https://github.com/KDCinfo/done-for-now)
+
+## A React Web App (Done (for now))
 
 > A React-based multi-'timer' web app with custom snooze and a one-at-a-time notification queue.
 
