@@ -4,9 +4,11 @@
 JavaScript | React | TypeScript
 ```
 
-> Shelved Indeterminately
+> This repo is shelved; however...
 
-A custom implementation went into my [Expired To Be](https://github.com/KDCinfo/expired-to-be) app on 03/31/18. It'd likely be better to extract an Alarms API from the [`TimerBox`](https://github.com/KDCinfo/expired-to-be/tree/master/src) component in that project instead.
+A custom implementation of my Alarms API went into my "Expired To Be" app on 03/31/18. That app's repo was later split between the [Chrome Extension version](https://github.com/KDCinfo/expired-to-be) and the [SPA version](https://github.com/KDCinfo/expired-to-be-spa). 
+
+Ergo, **in lieu of this repo, it might be better to extract an Alarms API from the [`TimerBox`](https://github.com/KDCinfo/expired-to-be-spa/blob/master/src/components/TimerBox.tsx) component in the SPA version instead.**
 
 ---
 
